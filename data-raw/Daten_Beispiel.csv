@@ -1,0 +1,15 @@
+study;treament;n_treat;response_treat;control;n_cont;response_cont;cov;n_treat_bmp;response_treat_bmp;n_cont_bmp;response_cont_bmp;n_treat_all;response_treat_all;n_cont_all;response_cont_all
+ENSURE;Erlotinib;110;69;Chemo;107;36;1;110;69;107;36;110;69;107;36
+EURTAC;Erlotinib;86;50;Chemo;87;13;1;86;50;87;13;86;50;87;13
+OPTIMAL;Erlotinib;82;68;Chemo;72;26;1;82;68;72;26;82;68;72;26
+IPASS;Gefitinib;223;95;Chemo;214;81;0,597;132;94;129;61;609;262;608;196
+NEJGSG;Gefitinib;114;84;Chemo;114;35;1;114;84;114;35;114;84;114;35
+First_Signal;Gefitinib;53;29;Chemo;42;20;0,44;26;22;16;6;159;88;150;69
+WJTOG;Gefitinib;58;36;Chemo;59;19;1;58;36;59;19;58;36;59;19
+Yang14;Gefitinib;35;17;Chemo;39;20;0,677;24;17;26;17;118;56;118;49
+V1532;Gefitinib;9;6;Chemo;11;5;1;9;6;11;5;9;6;11;5
+INTEREST;Gefitinib;125;15;Chemo;142;16;0,1423;19;8;19;4;659;60;657;50
+Zhou;Gefitinib;54;6;Chemo;54;6;0,71;13;5;19;2;81;11;76;10
+Yang17;Erlotinib;128;76;Gefitinib;128;67;1;128;76;128;67;128;76;128;67
+Xie;Erlotinib;23;14;Gefitinib;27;15;1;23;14;27;15;23;14;27;15
+WJOG5108L;Erlotinib;201;93;Gefitinib;218;104;0,717;160;88;175;103;227;100;244;112
