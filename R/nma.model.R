@@ -18,10 +18,13 @@
 #' @param prior.d A string of BUGS code that defines define priors on relative treatment effects. By default, independent normal priors are used with mean 0 and standard deviation 15u, where u is the largest maximum likelihood estimator in single trials \insertCite{@see @gemtc}{BUGSnet}.
 #' @param prior.sigma A string of BUGS code that defines the prior on the variance of relative treatment effects. By default, a uniform distribution with range 0 to u is used, where u is the largest maximum likelihood estimator in single trials \insertCite{@see @gemtc}{BUGSnet}.
 #' @param prior.beta Optional string that defines the prior on the meta-regression coefficients. Options are "UNRELATED", "EXCHANGEABLE", "EQUAL" \insertCite{@TSD3}{BUGSnet} or a string of BUGS code.
+#' @param prior.ww Optional string that defines the prior on the enrichment through weighting. Options are "dunif(0,0.3)", "dunif(0.3, 0.7)", "dunif(0.7,1)" (see paper from Efthimiou))
 #' @param covariate Optional string indicating the name of the variable in your data set that you would like to
 #' adjust for via meta regression. By default, covariate=NULL and no covariate adjustment is applied. If the specified covariate is numeric then
 #' it will be centered for the analysis. If it is a character or factor then it will be treated as categorical. Currently only categorical variables
 #' with fewer than 3 levels are supported.
+#' @param enrichment String indicating if an enrichment model through weighting should be used. By default
+#' enrichment= NULL, Options are "prior" or "covariate". More prior needs to be defined later.
 #' @param type If type="inconsistency", an inconsistency model will be built. By default, type="consistency" and a consistency model is built.
 #' will be built.
 #' @return \code{nma.model} returns an object of class \code{BUGSnetModel} which is a list containing the following components:
@@ -102,7 +105,9 @@ nma.model <- function(data = NULL,
                           prior.d = "DEFAULT",
                           prior.sigma = "DEFAULT",
                           prior.beta = NULL,
-                          covariate = NULL){
+                          prior.ww = NULL,
+                          covariate = NULL,
+                          enrichment = NULL){
   
   armdat <- TRUE
   contrast <- FALSE
@@ -220,7 +225,21 @@ nma.model <- function(data = NULL,
     } else {stop("Invalid datatype for covariate.")}
   } else{mean.cov <- NULL}
   
-  # determine number of treatments in dataset
+  #Enrichment options 
+  if(is.null(covariate) & enrichment=="covariate")stop("covariate must be specified when covariate as method for enrichment is chosen")
+  if(!is.null(enrichment) & effects!="random")stop("enrichment method only works for random-effect model")
+  if(!is.null(enrichment) & !(family %in% c("binomial", "binary", "bin", "binom")))stop("Enrichment method can only be chosen for binary outcome")
+  
+  if(enrichment == "prior" & is.null(prior.ww))stop("prior.ww must be specified when enrichment is prior")
+  if(enrichment %in% c(NULL, "covariate") & !is.null(prior.ww))stop("enrichment must be specified as prior when prior.ww is specified")
+  if(!is.null(prior.ww)){
+    if(!(prior.ww %in% c("dunif(0,0.3)", "dunif(0.3, 0.7)", "dunif(0.7,1)"))){
+      stop("prior.ww must be either dunif(0,0.3), dunif(0.3, 0.7) or dunif(0.7,1)")
+    }
+  }
+  
+  
+    # determine number of treatments in dataset
   nt <- length(unique(trts))
   
   #generate BUGS data object for arm-based data
@@ -413,8 +432,8 @@ nma.model <- function(data = NULL,
    }"
   }
   
-  #meta regression string
-  if (!is.null(covariate)){
+  #meta regression string --> can only use meta-regression when enrichment is null, otherwise meta-regression is used
+  if (!is.null(covariate) & is.null(enrichment)){
     
     if (prior.beta=="UNRELATED"){
       prior.meta.reg <- sprintf("beta[1]<-0
@@ -441,17 +460,27 @@ nma.model <- function(data = NULL,
   # #remove covariate from bugsdata2 if unused
   # if (is.null(covariate)){bugsdata2 <- bugsdata2[names(bugsdata2)!="x"]}
   
+  if (enrichment == "prior"){
+    prior.ww.str <-  sprintf("ww ~ %s", prior.ww)
+  }else{
+      prior.ww.str <- prior.ww
+    }
+  
+  
+  
   # make the code for the model
   
   model <- makeBUGScode(family=family,       ################ BUG seems to be here!!!!!!!!!!! Outputs have confirmed
                         link=link,
                         effects=effects,
                         inconsistency=(type=="inconsistency"),
+                        enrichment = enrichment,
                         prior.mu.str,
                         prior.d.str,
                         prior.sigma2.str,
                         covariate,
                         prior.meta.reg,
+                        prior.ww.str,
                         auto = FALSE, # for compatibility with auto-run function - can change this if the feature is added
                         arm = armdat,
                         contrast = contrast) %>%
@@ -487,9 +516,11 @@ nma.model <- function(data = NULL,
                            link=link,
                            type=type,
                            effects=effects,
+                           enrichment = enrichment,
                            covariate=covariate,
                            prior.mu=prior.mu,
                            prior.d=prior.d,
+                           prior.ww = prior.ww,
                            prior.sigma=prior.sigma,
                            prior.beta=prior.beta,
                            reference=reference,
