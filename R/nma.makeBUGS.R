@@ -1,6 +1,7 @@
 #add warning messages for incompatible link and family
 
-makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, prior.d.str, prior.sigma2.str, meta.covariate, prior.meta.reg, auto, arm, contrast){
+makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior.mu.str, prior.d.str, prior.sigma2.str,
+                         meta.covariate, prior.meta.reg, prior.ww.str, auto, arm, contrast, ){
   
   # Set up family and monitor strings for arm-based reporting trials
   
@@ -46,7 +47,7 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
     dev.str <- "resdev_a[i] <- sum(dev_a[i,1:na_a[i]])"
   
     # TODO testing metareg for contrast models?
-  if (!is.null(meta.covariate)) {
+  if (!is.null(meta.covariate) && is.null(enrichment)){ #only do meta-regression if there is no enrichment chosen.
     metareg.str <- "+ (beta[t_a[i,k]]-beta[t_a[i,1]])*(x_a[i,k])"
     metareg.str.c <- "+ (beta[t_c[i,k]]-beta[t_c[i,1]])*(x_c[i,k])"
   } else {
@@ -54,7 +55,7 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
       metareg.str.c <- ""
   }
   
-  if (effects == "fixed"){
+  if (effects == "fixed"){ # in fixed effect meta-analysis no enrichment model possible
     
     # Set up link for arm-based reporting trials
     if (family == "binomial" && link=="logit"){
@@ -167,6 +168,7 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
       link.str <- paste0(link.str, metareg.str)
       link.str.c <- paste0(link.str.c, metareg.str.c)
       
+      
       if(arm) {
         
         model.str.a <- sprintf("for(i in 1:ns_a){             # LOOP THROUGH STUDIES
@@ -255,6 +257,16 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
       
       if(arm) {
         
+        if(is.null(enrichment)){
+          delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k])"
+        }else if(enrichment = "covariate"){
+          delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k]*x_a[i,k])"
+        }else{  #stimmt das so?
+          delta.str <- "ind[i] <- ifelse(x_a[i,k]==1,taud[i,k],taud[i,k]*ww) 
+                        delta[i,k] ~ dnorm(md[i,k],ind[i])"
+        }
+      
+        
         model.str.a <- sprintf("for(i in 1:ns_a){                      # LOOP THROUGH STUDIES
 
         w[i,1] <- 0    # adjustment for multi-arm trials is zero for control arm
@@ -268,7 +280,8 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
         %s
         for (k in 2:na_a[i]) {             # LOOP THROUGH ARMS
           # trial-specific LOR distributions
-          delta[i,k] ~ dnorm(md[i,k],taud[i,k])
+          #delta[i,k] ~ dnorm(md[i,k],taud[i,k])
+          %S
           # mean of LOR distributions, with multi-arm trial correction
           md[i,k] <-  d[t_a[i,k]] - d[t_a[i,1]] + sw[i,k]
           # precision of LOR distributions (with multi-arm trial correction)
@@ -278,7 +291,7 @@ makeBUGScode <- function(family, link, effects, inconsistency, prior.mu.str, pri
           # cumulative adjustment for multi-arm trials
           sw[i,k] <- sum(w[i,1:(k-1)])/(k-1)
         }
-      }", monitor.str,family.str, link.str, dev.str)
+      }", monitor.str,family.str, link.str, dev.str, delta.str)
         
       } else {model.str.a <- "resdev_a <- 0"}
       
