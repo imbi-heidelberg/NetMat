@@ -226,7 +226,7 @@ nma.model <- function(data = NULL,
   } else{mean.cov <- NULL}
   
   #Enrichment options 
-  if(is.null(covariate) & enrichment=="covariate")stop("covariate must be specified when covariate as method for enrichment is chosen")
+  if(is.null(covariate) & !is.null(enrichment))stop("covariate must be specified when covariate as method for enrichment is chosen")
   if(!is.null(enrichment) & effects!="random")stop("enrichment method only works for random-effect model")
   if(!is.null(enrichment) & !(family %in% c("binomial", "binary", "bin", "binom")))stop("Enrichment method can only be chosen for binary outcome")
   
