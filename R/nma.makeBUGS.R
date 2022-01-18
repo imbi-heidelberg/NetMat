@@ -261,9 +261,9 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
           delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k])"
         }else if(enrichment = "covariate"){
           delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k]*x_a[i,k])"
-        }else{  #stimmt das so?
-          delta.str <- "ind[i] <- ifelse(x_a[i,k]==1,taud[i,k],taud[i,k]*ww) 
-                        delta[i,k] ~ dnorm(md[i,k],ind[i])"
+        }else{  #stimmt das so?# i oder [i,k]
+          delta.str <- "ind[i,k] <- ifelse(x_a[i,k]==1,taud[i,k],taud[i,k]*ww) 
+                        delta[i,k] ~ dnorm(md[i,k],ind[i,k])"
         }
       
         
