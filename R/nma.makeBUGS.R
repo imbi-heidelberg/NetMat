@@ -1,7 +1,7 @@
 #add warning messages for incompatible link and family
 
 makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior.mu.str, prior.d.str, prior.sigma2.str,
-                         meta.covariate, prior.meta.reg, prior.ww.str, auto, arm, contrast, ){
+                         meta.covariate, prior.meta.reg, prior.ww.str, auto, arm, contrast){
   
   # Set up family and monitor strings for arm-based reporting trials
   
@@ -220,8 +220,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
         %s
         %s
 
-      %s
-      ", paste0(ifelse(auto, "", "model{                      # *** PROGRAM STARTS")),
+      %s", paste0(ifelse(auto, "", "model{                      # *** PROGRAM STARTS")),
          model.str.a,
          model.str.c,
         ifelse(arm, prior.mu.str, ""), # only include mu priors if arm-based trials included
@@ -259,7 +258,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
         
         if(is.null(enrichment)){
           delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k])"
-        }else if(enrichment = "covariate"){
+        }else if(enrichment == "covariate"){
           delta.str <- "delta[i,k] ~ dnorm(md[i,k],taud[i,k]*x_a[i,k])"
         }else{  #stimmt das so?# i oder [i,k]
           delta.str <- "ind[i,k] <- ifelse(x_a[i,k]==1,taud[i,k],taud[i,k]*ww) 

@@ -472,7 +472,7 @@ nma.model <- function(data = NULL,
   
   model <- makeBUGScode(family=family,       ################ BUG seems to be here!!!!!!!!!!! Outputs have confirmed
                         link=link,
-                        effects=effects,
+                        effects= effects,
                         inconsistency=(type=="inconsistency"),
                         enrichment = enrichment,
                         prior.mu.str,
