@@ -9,8 +9,10 @@ dat <- data.prep(nsclc_data, varname.t = "treatment", varname.s = "study")
 
 
 model_re003 <- nma.model(dat = dat, outcome = "event", N = "n", reference = "Chemo", family = "binomial",
-                      link = "logit", effects = "random", enrichment = "prior", prior.ww = "dunif(0,0.3)", covariate = "x",
-                      prior.beta = "EXCHANGEABLE", prior.sigma = "dunif(0,2)", prior.mu = "dnorm(0,1.0E-6)", prior.d = "dnorm(0,1.0E-6)")
+                      link = "logit", effects = "random", enrichment = "prior", 
+                      prior.ww = "dunif(0,0.3)", covariate = "x",
+                      prior.beta = "EXCHANGEABLE", prior.sigma = "dunif(0,2)", 
+                      prior.mu = "dnorm(0,1.0E-6)", prior.d = "dnorm(0,1.0E-6)")
 
 model_re037 <- nma.model(dat = dat, outcome = "event", N = "n", reference = "Chemo", family = "binomial",
                          link = "logit", effects = "random", enrichment = "prior", prior.ww = "dunif(0.3, 0.7)", covariate = "x",

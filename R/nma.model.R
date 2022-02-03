@@ -207,10 +207,12 @@ nma.model <- function(data = NULL,
                        "For the covariate to be treated as a categorical variable it must be converted to a factor in the data that is ",
                        "passed to data.prep."))
       }
-      
+      if(is.null(enrichment)) {
       #de-mean covariate if continuous
       mean.cov <- mean(covariates, na.rm=TRUE)
       adata$covariate <- adata$covariate-mean.cov
+      } else {adata$covariate <- covariates
+             mean.cov <- NULL}
     } else if (is.factor(covariates) == TRUE || is.character(covariates) == TRUE) {
       #check that covariate has fewer than 3 levels and convert strings and factors to binary covariates
       if (length(unique(covariates)) > 2)
