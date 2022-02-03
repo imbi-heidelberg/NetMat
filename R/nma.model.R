@@ -465,7 +465,7 @@ nma.model <- function(data = NULL,
   if (enrichment == "prior"){
         prior.ww.str <-  sprintf("ww ~ %s", prior.ww)
   }else{
-      prior.ww.str <- prior.ww
+      prior.ww.str <-""
     }
   
   

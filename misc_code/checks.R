@@ -70,3 +70,17 @@ jags.enrich_commonw0003
 
 jags.enrich_commonw0307
 
+
+
+model_cov <- nma.model(dat = dat, outcome = "event", N = "n", reference = "Chemo", family = "binomial",
+                         link = "logit", effects = "random", enrichment = "covariate", covariate = "x",
+                         prior.beta = "EXCHANGEABLE")
+
+
+set.seed(1234)
+results_cov <- nma.run(model_cov, n.adapt = 5000, n.burnin = 50000, n.iter = 20000, DIC = F, thin = 2)
+
+s_re <- summary(results_cov$samples)
+s_retbl_re <- cbind(s_re$statistics[,1:2], s_re$quantiles[,c(3,1,5)])
+tbl_re
+
