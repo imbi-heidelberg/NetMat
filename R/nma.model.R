@@ -232,8 +232,9 @@ nma.model <- function(data = NULL,
   if(!is.null(enrichment) & effects!="random")stop("enrichment method only works for random-effect model")
   if(!is.null(enrichment) & !(family %in% c("binomial", "binary", "bin", "binom")))stop("Enrichment method can only be chosen for binary outcome")
   
-  if(enrichment == "prior" & is.null(prior.ww))stop("prior.ww must be specified when enrichment is prior")
-  if(enrichment %in% c(NULL, "covariate") & !is.null(prior.ww))stop("enrichment must be specified as prior when prior.ww is specified")
+  if(!is.null(enrichment)){if(enrichment == "prior" & is.null(prior.ww))stop("prior.ww must be specified when enrichment is prior")}
+  if(is.null(enrichment) & !is.null(prior.ww))stop("enrichment must be specified as prior when prior.ww is specified")
+  if(!is.null(enrichment)){if(enrichment == "covariate" & !is.null(prior.ww))stop("enrichment must be specified as prior when prior.ww is specified")}
   if(!is.null(prior.ww)){
     if(!(prior.ww %in% c("dunif(0,0.3)", "dunif(0.3, 0.7)", "dunif(0.7,1)"))){
       stop("prior.ww must be either dunif(0,0.3), dunif(0.3, 0.7) or dunif(0.7,1)")
@@ -462,11 +463,11 @@ nma.model <- function(data = NULL,
   # #remove covariate from bugsdata2 if unused
   # if (is.null(covariate)){bugsdata2 <- bugsdata2[names(bugsdata2)!="x"]}
   
-  if (enrichment == "prior"){
-        prior.ww.str <-  sprintf("ww ~ %s", prior.ww)
-  }else{
-      prior.ww.str <-""
-    }
+  if(!is.null(enrichment)){if(enrichment == "prior"){
+        prior.ww.str <-  sprintf("ww ~ %s", prior.ww)}}
+    else{
+      prior.ww.str <-""}
+    
   
   
   
