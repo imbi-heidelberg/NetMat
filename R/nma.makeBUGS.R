@@ -79,6 +79,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
       link.str <- paste0(link.str, metareg.str)
       link.str.c <- paste0(link.str.c, metareg.str.c)
     
+    prior.ww.str <- ""
       
       
     # Fixed Effects Consistency Model
@@ -133,14 +134,16 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
       totresdev <- sum(resdev_a) + sum(resdev_c[])
       d[1]<-0
       %s
-                          
+                         
       %s
-      
-      %s               
+      %s
+      %s
+                     
     %s", paste0(ifelse(auto, "", "model{                               # *** PROGRAM STARTS")),
         model.str.a,
         model.str.c,
         ifelse(arm, prior.mu.str, ""), # only include priors for mu if arm-based data is included
+        prior.ww.str,
         prior.d.str,
         prior.meta.reg,
         paste0(ifelse(auto, "", "}")))
@@ -219,6 +222,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
 
         %s
         %s
+        %s
 
       %s
       ", paste0(ifelse(auto, "", "model{                      # *** PROGRAM STARTS")),
@@ -226,6 +230,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
          model.str.c,
         ifelse(arm, prior.mu.str, ""), # only include mu priors if arm-based trials included
         prior.d.str,
+        prior.ww.str,
         prior.meta.reg,
         paste0(ifelse(auto, "", "}")))
     }
@@ -358,6 +363,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
     }
 
     if(inconsistency){
+      prior.ww.str <-""
       
       if(arm) {
         
@@ -409,6 +415,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
       %s
       %s
       %s
+      %s
       tau <- 1/sigma2
       %s
 
@@ -417,6 +424,7 @@ makeBUGScode <- function(family, link, effects, enrichment, inconsistency, prior
                           model.str.a,
                           model.str.c,
                           ifelse(arm, prior.mu.str, ""), # only need mu prior if arm-based trials included
+                          prior.ww.str, 
                           prior.d.str,
                           prior.sigma2.str,
                           prior.meta.reg,

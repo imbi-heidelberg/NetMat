@@ -1,4 +1,4 @@
-Package: NetMat
+Package: BugsNet
 Title: Bayesian network meta-analyses for targeted and non-targeted therapies
 Version: 1.1.1
 Authors@R: c(
@@ -11,7 +11,6 @@ Authors@R: c(
   person("Augustine", "Wigle", email = "amhwigle@uwaterloo.ca", role = c("ctb")),
   person("Tanja", "Proctor", email = "proctor@imbi.uni-heidelberg.de", role = c("ctb")),
   person("Samuel", "Zimmermann", email = "zimmermann@imbi.uni-heidelberg.de", role =c("ctb"))
-  
 ) 
 Description: The NetMat package is an extension of the BUGSnet package.
 BUGSnet (Bayesian inference Using Gibbs Sampling to conduct 

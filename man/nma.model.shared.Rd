@@ -21,7 +21,8 @@ nma.model.shared(
   effects,
   prior.mu = "DEFAULT",
   prior.d = "DEFAULT",
-  prior.sigma = "DEFAULT"
+  prior.sigma = "DEFAULT",
+  enrichment = NULL
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ indicating person-time followup (e.g person years) or study followup time.}
 \item{prior.d}{A string of BUGS code that defines define priors on relative treatment effects. By default, independent normal priors are used with mean 0 and standard deviation 15u, where u is the largest maximum likelihood estimator in single trials \insertCite{@see @gemtc}{BUGSnet}.}
 
 \item{prior.sigma}{A string of BUGS code that defines the prior on the variance of relative treatment effects. By default, a uniform distribution with range 0 to u is used, where u is the largest maximum likelihood estimator in single trials \insertCite{@see @gemtc}{BUGSnet}.}
+
+\item{enrichment}{Set enrichment´to NULL}
 }
 \value{
 \code{nma.model} returns an object of class \code{BUGSnetModel} which is a list containing the following components:

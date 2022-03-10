@@ -1,4 +1,4 @@
-Package: NetMat
+Package: BUGSnet
 Title: Bayesian network meta-analyses for targeted and non-targeted therapies
 Version: 1.1.1
 Authors@R: c(
@@ -11,16 +11,14 @@ Authors@R: c(
   person("Augustine", "Wigle", email = "amhwigle@uwaterloo.ca", role = c("ctb")),
   person("Tanja", "Proctor", email = "proctor@imbi.uni-heidelberg.de", role = c("ctb")),
   person("Samuel", "Zimmermann", email = "zimmermann@imbi.uni-heidelberg.de", role =c("ctb"))
-  
   ) 
 Description: The NetMat package is an extension of the BUGSnet package. 
-In BUGsnet Bayesian analyses are conducted with JAGS. Outputs are 
-highly customizable and include network plots, tables of network 
-characteristics, league tables and league heat plots, SUCRA plots, 
-rankograms, forest plots, leverage plots, traceplots, posterior mean 
-deviance comparison plots. Additionally to the BUGSnet package, 
-enrichment-through-weighting methods are implemented.
-
+  In BUGSnet Bayesian analyses are conducted with JAGS. Outputs are 
+  highly customizable and include network plots, tables of network 
+  characteristics, league tables and league heat plots, SUCRA plots, 
+  rankograms, forest plots, leverage plots, traceplots, posterior mean 
+  deviance comparison plots. Additionally to the BUGSnet package, 
+  enrichment-through-weighting methods are implemented.
 Depends: R (>= 3.6),
   rjags (>= 4.9)
 License: CC BY-NC-SA 4.0

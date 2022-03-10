@@ -24,6 +24,7 @@
 #' @param prior.sigma A string of BUGS code that defines the prior on the variance of relative treatment effects. By default, a uniform distribution with range 0 to u is used, where u is the largest maximum likelihood estimator in single trials \insertCite{@see @gemtc}{BUGSnet}.
 #' @param type If type="inconsistency", an inconsistency model will be built. By default, type="consistency" and a consistency model is built.
 #' will be built.
+#' @param enrichment Set enrichment´to NULL
 #' @return \code{nma.model} returns an object of class \code{BUGSnetModel} which is a list containing the following components:
 #' @return \code{bugs} - A long character string containing BUGS code that will be run in \code{jags}.
 #' @return \code{data} - The data used in the BUGS code.
@@ -94,13 +95,17 @@ nma.model.shared <- function(data_arm = NULL,
                       effects,
                       prior.mu = "DEFAULT",
                       prior.d = "DEFAULT",
-                      prior.sigma = "DEFAULT"){
+                      prior.sigma = "DEFAULT",
+                      enrichment = NULL){
   
   if(is.null(data_arm) && is.null(data_contrast)) {
     
     stop("data_arm and data_contrast must be specified")
     
   }
+  
+  if(!is.null(enrichment)) {
+    stop("shared model not defined for enrichment")}
   
   # Bind variables to function
   trt.ini <- NULL
@@ -457,6 +462,8 @@ nma.model.shared <- function(data_arm = NULL,
   #   }
   # }else prior.meta.reg <- ""
   prior.meta.reg <- ""
+  
+  prior.ww.str <- ""
   # #remove covariate from bugsdata2 if unused
   # if (is.null(covariate)){bugsdata2 <- bugsdata2[names(bugsdata2)!="x"]}
   
@@ -464,13 +471,15 @@ nma.model.shared <- function(data_arm = NULL,
   
   model <- makeBUGScode(family=family,
                         link=link,
+                        enrichment = enrichment,
                         effects=effects,
                         inconsistency=(type=="inconsistency"),
-                        prior.mu.str,
-                        prior.d.str,
-                        prior.sigma2.str,
+                        prior.mu.str = prior.mu.str,
+                        prior.d.str = prior.d.str,
+                        prior.sigma2.str = prior.sigma2.str,
                         meta.covariate = NULL,
-                        prior.meta.reg,
+                        prior.meta.reg = prior.meta.reg,
+                        prior.ww.str = prior.ww.str,
                         auto = FALSE, # for compatibility with auto-run function - can change this if the feature is added
                         arm = armdat,
                         contrast = contrast) %>%
@@ -504,6 +513,7 @@ nma.model.shared <- function(data_arm = NULL,
                            link=link,
                            type=type,
                            effects=effects,
+                           enrichment =enrichment,
                            covariate=NULL,
                            prior.mu=prior.mu,
                            prior.d=prior.d,

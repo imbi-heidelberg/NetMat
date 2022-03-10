@@ -373,6 +373,7 @@ nma.model.contrast <- function(data_contrast = NULL,
   # }else prior.meta.reg <- ""
   
   prior.meta.reg <- ""
+  prior.ww.str <- ""
   
   # #remove covariate from bugsdata2 if unused
   # if (is.null(covariate)){bugsdata2 <- bugsdata2[names(bugsdata2)!="x"]}
@@ -383,10 +384,11 @@ nma.model.contrast <- function(data_contrast = NULL,
                         effects=effects,
                         inconsistency=(type=="inconsistency"),
                         prior.mu.str,
-                        prior.d.str,
-                        prior.sigma2.str,
+                        prior.d.str = prior.d.str,
+                        prior.sigma2.str = prior.sigma2.str,
                         meta.covariate = NULL,
-                        prior.meta.reg,
+                        prior.meta.reg = prior.meta.reg,
+                        prior.ww.str = prior.ww.str,
                         auto = FALSE, # for compatibility with auto-run function - can change this if the feature is added
                         arm = FALSE,
                         contrast = contrast) %>%

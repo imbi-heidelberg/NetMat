@@ -157,3 +157,27 @@
 #' \insertRef{TSD2}{BUGSnet}
 #' 
 "parkinsons_arm"
+
+#' Non small cell lung cancer arm-based data
+#'
+#' This dataset was used to demonstrate network meta-analysis with enrichment through weighting methods in the 
+#' paper Proctor et al. 
+#' It includes arm-based information on 14 studies with 3 different treatments and different covariates and binary outcome.
+#' This dataset can be used to demonstrate the use of enriching-through-weighting methods
+#' in BUGSnet.
+#'
+#' @docType data
+#'
+#' @usage data(nsclc)
+#'
+#' @format A dataset.
+#'
+#' @keywords datasets
+#'
+#' @examples
+#' data(nsclc)
+#' 
+#' @references 
+#' \insertRef{proctor22}{BUGSnet} 
+#' 
+"nsclc"

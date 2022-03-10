@@ -11,3 +11,4 @@
 ^README\.Rmd$
 ^NEWS\.md$
 ^manual\.pdf$
+^.git*
