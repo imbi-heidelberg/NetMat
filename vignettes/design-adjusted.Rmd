@@ -1,0 +1,251 @@
+---
+title: "Enrichment through Weighting"
+author: "Samuel Zimmermann, Tanja Proctor"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: references.bib
+vignette: >
+  %\VignetteIndexEntry{Meta-regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+``` {r}
+library(BUGSnet)
+
+data("nsclc")
+dataprep <- data.prep(arm.data = nsclc_data,
+                      varname.t = "treatment",
+                      varname.s = "study")
+```
+## Extension of the model via Enrichtment through weighting (Proctor et al. 2022)
+
+Note: This vignette is structured like the one for the standard meta-regression model but with the NSCLC-data set and additional weighting approaches as example.
+
+
+Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods along the work of Efthimiou et. al. (2017) for the integration of randomized and non-randomized evidence in network meta-analysis.
+In clinical research, a drug might be identified, during its development or even retrospectively, as being more promising in a
+specific subgroup of patients (i.e. in patients with a particular biomarker) than in the originally defined population. As a result,
+focus may shift onto this specific subpopulation in subsequent research. The enrichment through weighting approach developed by Proctor et al. allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account.
+The general network meta-analysis model is now extended by including a down-weighting factor $w_j$ in the variance of the estimated treatment effect of study $j$:
+
+
+$$
+r_{jk} \sim \text{Bin}\left(p_{jk}, n_{jk}\right) \\
+
+\text{logit}(p_{jk})=
+\begin{cases}
+\mu_{jb} \quad \quad \quad \quad \quad \text{ for } k=b\\
+\mu_{jb}+\delta_{jbk} \quad \quad \text{ for }  k \neq b 
+\end{cases} \\
+\delta_{jbk} \sim \mathcal{N} \left(d_{bk}, \frac{\sigma^2}{w_j}\right) \sim
+ N \left(d_{Ck}-d_{Cb},\frac{\sigma^2}{w_j}\right).
+$$
+
+To clarify the usage of this type of weighting, a sample dataset was added regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as covariate X. You can midfy this factor $w_j$ in two ways: it can be chosen to depend on
+
+- the percentage of biomarker-positive patients per study, meaning $x_j$, is assigned to $w_j$. 
+By doing so, studies with a higher proportion of biomarker-positive patients are contributing more evidence than studies with only a few biomarker-positive patients and targeted studies ($x_j$ = 100\%) are included without downweighting ($w_j = 1$).  
+
+
+- the weight of studies with $x < 1$ is decreased by assigning $w_j$ a prior uniform distribution which depends on the assumed "general trust" in the evidence of the mixed population studies. Looking at three different distributions, we evaluate varying levels of trust in the mixed-populations' data:
+1. $w_j \sim \mathcal{U}(0 ,0.3)$; 
+2. $w_j \sim \mathcal{U}(0.3,0.7)$; 
+3. $w_j \sim \mathcal{U}(0.7,1)$
+This can be useful in case no information of the treatment effect of biomarker-positive patients from other trials are available or the percentage is unknown.
+
+
+
+## Feasibility Assessment
+
+### Network Plot
+
+
+```{r, net.plot, echo=TRUE, fig.width=5, fig.height=5}
+ net.plot(dataprep, node.scale = 1, 
+          edge.scale=1,
+          label.offset1 = 2)
+```
+
+
+### Generate Network Characteristics via `net.tab()`
+
+```{r, results = "hide"}
+network.char <- net.tab(data = dataprep,
+                        outcome = "event",
+                        N = "n",
+                        type.outcome = "binomial")
+```
+
+#### Network Characteristics
+`network.char$network` generates characteristics about the network, such as connectedness, number of treatments in the network, and in the case of a binomial outcome, the number of events in the network.
+```{r, echo = FALSE}
+knitr::kable(network.char$network)
+```
+
+#### Intervention Characteristics
+`network.char$intervention` generates outcome and sample size data broken down by treatment.
+
+```{r, echo=FALSE}
+knitr::kable(network.char$intervention)
+```
+
+#### Comparison Characteristics
+`network.char$comparison` generates outcome and sample size data broken down by treatment **comparison**.
+```{r, echo=FALSE}
+knitr::kable(network.char$comparison)
+```
+
+## Main analysis
+`nma.model()` still creates BUGS code and that will be put into `nma.run()` and analysed through JAGS [@JAGS]. The `reference` parameter indicates the name of the treatment that will be seen as the 'referent' comparator, this is often a placebo of some sort. In our case, it is Chemotherapy. Since our outcome is dichotomous, and we are not interested in event rates, we are using the "binomial" family. In our case, we want to compare odds ratios, so we are using the $logit$ link. We have chosen the enrichment option to be "covariate" and specified the variable "X", denoting the proportion of biomarker positive patients in the NSCLC dataset to be this covariate.
+
+
+```{r}
+enrichment_covariate_model <- nma.model(data=dataprep,
+                                  outcome="event",
+                                  N="n",
+                                  reference="Chemo",
+                                  family="binomial",
+                                  link="logit",
+                                  effects="random",
+                                  covariate="x",
+                                  prior.beta = "EXCHANGEABLE",
+                                  enrichment = "covariate",
+                                 )
+
+```
+
+
+Alternatively, one can also specify the enrichment as "prior" and choose the parameter prior.ww from the three options "dunif(0,0.3)", "dunif(0.3,0.7)" and "dunif(0.7,1)" depending on the "general trust" put into the studies where $x < 1$ (Efthimiou et al.2017). Other options for priors may be added later. We chose the first option here, "dunif(0,0.3)".
+```{r}
+enrichment_prior_model <- nma.model(data=dataprep,
+                                  outcome="event",
+                                  N="n",
+                                  reference="Chemo",
+                                  family="binomial",
+                                  link="logit",
+                                  effects="random",
+                                  covariate="x",
+                                  prior.beta = "EXCHANGEABLE",
+                                  enrichment = "prior",
+                                  prior.ww = "dunif(0,0.3)"
+                                 )
+
+```
+
+If you want to review the BUGS code, you can still review it by outputting `cat(random_effects_model$bugs)`. 
+
+The next step is to run the NMA model using `nma.run()`. Since we are working in a Bayesian framework, we need to specify the number of adaptations, burn-ins, and iterations. A description of Bayesian MCMC is omitted here, we direct the reader to any introductory text on Bayesian Modelling [@lunn2012bugs].
+
+```{r, results = "hide"}
+
+enrichment_covariate_results <- nma.run(enrichment_covariate_model,
+                           n.adapt=1000,
+                           n.burnin=1000,
+                           n.iter=5000)
+
+```
+
+
+```{r, results = "hide"}
+
+enrichment_prior_results <- nma.run(enrichment_prior_model,
+                           n.adapt=1000,
+                           n.burnin=1000,
+                           n.iter=5000)
+
+```
+
+
+
+<!-- Next, we will assess consistency in the network by fitting an inconsistency fixed effects model and comparing it to our -->
+<!-- consistency fixed effects model. If our inconsistency model shows a better fit than the consistency model, then  -->
+<!-- it is likely that there is inconsistency in the network. -->
+
+<!-- ##Check inconsistency -->
+<!-- ```{r, results = "hide", fig.show = 'hide',  fig.width=8, fig.height = 8} -->
+<!-- re_inconsistency_model <- nma.model(data=dataprep, -->
+<!--                                   outcome="events", -->
+<!--                                   N="sampleSize", -->
+<!--                                   reference="02", -->
+<!--                                   family="binomial", -->
+<!--                                   link="logit", -->
+<!--                                   effects="random", -->
+<!--                                   type="inconsistency", -->
+<!--                                   covariate="stroke", -->
+<!--                                   prior.beta="EXCHANGEABLE") -->
+
+<!-- re_inconsistency_results <- nma.run(re_inconsistency_model, -->
+<!--                                          n.adapt=1000, -->
+<!--                                          n.burnin=1000, -->
+<!--                                          n.iter=10000) -->
+
+<!-- ``` -->
+
+<!-- Rainbow plots and DIC calculations can highlight outliers and can compare model fits between the two models.  -->
+<!-- ```{r, fig.width=7, fig.height=4, results = "hide"} -->
+<!-- par(mfrow = c(1,2)) -->
+<!-- re_model_fit <- nma.fit(random_effects_results, main = "Consistency Model" ) -->
+<!-- inconsist_model_fit <- nma.fit(re_inconsistency_results, main= "Consistency Model") -->
+<!-- ``` -->
+<!-- The leverage plots and DIC show that the consistency and inconsistency models are very similar, suggesting that -->
+<!-- a consistency model is satisfactory. -->
+
+<!-- A plot of the \code{pmdev} of both models against each other can highlight descrepancies between the two models. -->
+<!-- ```{r, fig.height=6, fig.width = 6} -->
+<!-- nma.compare(re_model_fit, inconsist_model_fit) -->
+<!-- ``` -->
+
+<!-- Seeing as that all the points lie close to the $y=x$ line, there is very little evidence of inconsistency. -->
+
+## Results
+
+### Regression plot
+
+```{r, echo=TRUE, fig.width=7, fig.height=4}
+nma.regplot(enrichment_covariate_results)
+```
+
+```{r, echo=TRUE, fig.width=7, fig.height=4}
+nma.regplot(enrichment_prior_results)
+```
+
+<!-- The lines are not parallel because we specified EXCHANGEABLE priors on the regression coefficients. -->
+
+<!-- Let's looks at the relative treatment differences and ranking of treaments when the proportion of patients with a prior stroke is equal to 0.1. -->
+
+<!-- ### Sucra Plot -->
+<!-- ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95} -->
+<!-- sucra.out <- nma.rank(random_effects_results, largerbetter=FALSE, cov.value=0.1, sucra.palette= "Set1") -->
+<!-- sucra.out$sucraplot -->
+<!-- ``` -->
+
+<!-- ### League Plot -->
+<!-- ```{r, echo=TRUE, fig.width=15, fig.height=10} -->
+<!-- league.out <- nma.league(random_effects_results,  -->
+<!--                              central.tdcy = "median", -->
+<!--                              order = as.vector(t(dataprep$treatments)), -->
+<!--                              cov.value=0.1,  -->
+<!--                              log.scale = FALSE) -->
+<!-- league.out$heatplot -->
+<!-- ``` -->
+
+<!-- ### Forest Plot -->
+<!-- ```{r, echo=TRUE, fig.width=10, fig.height=4} -->
+<!-- nma.forest(random_effects_results,  -->
+<!--            comparator="02",  -->
+<!--            central.tdcy = "median", -->
+<!--            cov.value=0.1, -->
+<!--            x.trans="log") -->
+<!-- ``` -->
+
+
+
+# References
