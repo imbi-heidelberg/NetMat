@@ -1,11 +1,11 @@
 ---
-title: "Enrichment through Weighting"
+title: "Enriching-through-weighting"
 author: "Samuel Zimmermann, Tanja Proctor"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{Meta-regression}
+  %\VignetteIndexEntry{Enriching-through-weighting}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,22 +18,24 @@ knitr::opts_chunk$set(
 ```
 
 ``` {r}
+library(magrittr)
 library(BUGSnet)
 
-data("nsclc")
-dataprep <- data.prep(arm.data = nsclc_data,
+
+data(nsclc)
+dataprep <- data.prep(arm.data = nsclc,
                       varname.t = "treatment",
                       varname.s = "study")
 ```
-## Extension of the model via Enrichtment through weighting (Proctor et al. 2022)
+## Extension of the model via enriching-through-weighting (Proctor et al. 2022)
 
 Note: This vignette is structured like the one for the standard meta-regression model but with the NSCLC-data set and additional weighting approaches as example.
 
 
-Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods along the work of Efthimiou et. al. (2017) for the integration of randomized and non-randomized evidence in network meta-analysis.
+Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods based on the work of Efthimiou et. al. (2017) for the integration of randomized and non-randomized evidence in network meta-analysis.
 In clinical research, a drug might be identified, during its development or even retrospectively, as being more promising in a
 specific subgroup of patients (i.e. in patients with a particular biomarker) than in the originally defined population. As a result,
-focus may shift onto this specific subpopulation in subsequent research. The enrichment through weighting approach developed by Proctor et al. allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account.
+focus may shift onto this specific subpopulation in subsequent research. The enriching -through-weighting approach described in Proctor et al. allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account.
 The general network meta-analysis model is now extended by including a down-weighting factor $w_j$ in the variance of the estimated treatment effect of study $j$:
 
 
@@ -207,43 +209,31 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 ## Results
 
-### Regression plot
-
-```{r, echo=TRUE, fig.width=7, fig.height=4}
-nma.regplot(enrichment_covariate_results)
-```
-
-```{r, echo=TRUE, fig.width=7, fig.height=4}
-nma.regplot(enrichment_prior_results)
-```
-
-<!-- The lines are not parallel because we specified EXCHANGEABLE priors on the regression coefficients. -->
-
-<!-- Let's looks at the relative treatment differences and ranking of treaments when the proportion of patients with a prior stroke is equal to 0.1. -->
+Let's looks at the relative treatment differences and ranking of treaments when the proportion of patients with a prior stroke is equal to 0.1. -->
 
 <!-- ### Sucra Plot -->
 <!-- ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95} -->
-<!-- sucra.out <- nma.rank(random_effects_results, largerbetter=FALSE, cov.value=0.1, sucra.palette= "Set1") -->
+<!-- sucra.out <- nma.rank(enrichment_prior_results,  -->
+<!--                       largerbetter=FALSE,  -->
+<!--                       sucra.palette= "Set1") -->
 <!-- sucra.out$sucraplot -->
 <!-- ``` -->
 
 <!-- ### League Plot -->
 <!-- ```{r, echo=TRUE, fig.width=15, fig.height=10} -->
-<!-- league.out <- nma.league(random_effects_results,  -->
-<!--                              central.tdcy = "median", -->
-<!--                              order = as.vector(t(dataprep$treatments)), -->
-<!--                              cov.value=0.1,  -->
-<!--                              log.scale = FALSE) -->
+<!-- league.out <- nma.league(enrichment_prior_results, -->
+<!--                             central.tdcy = "median", -->
+<!--                             order = as.vector(t(dataprep$treatments)), -->
+<!--                             log.scale = FALSE) -->
 <!-- league.out$heatplot -->
 <!-- ``` -->
 
 <!-- ### Forest Plot -->
 <!-- ```{r, echo=TRUE, fig.width=10, fig.height=4} -->
-<!-- nma.forest(random_effects_results,  -->
-<!--            comparator="02",  -->
-<!--            central.tdcy = "median", -->
-<!--            cov.value=0.1, -->
-<!--            x.trans="log") -->
+<!-- nma.forest(enrichment_prior_results, -->
+<!--             comparator="02", -->
+<!--          central.tdcy = "median",  -->
+<!--           x.trans="log") -->
 <!-- ``` -->
 
 

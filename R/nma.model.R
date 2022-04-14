@@ -464,7 +464,8 @@ nma.model <- function(data = NULL,
   # if (is.null(covariate)){bugsdata2 <- bugsdata2[names(bugsdata2)!="x"]}
   
   if(!is.null(enrichment)){if(enrichment == "prior"){
-        prior.ww.str <-  sprintf("ww ~ %s", prior.ww)}}
+        prior.ww.str <-  sprintf("ww ~ %s", prior.ww)}
+    else prior.ww.str <- ""}
     else{
       prior.ww.str <-""}
     
