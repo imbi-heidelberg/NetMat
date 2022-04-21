@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 ```
 
 ``` {r}
-library(magrittr)
 library(BUGSnet)
 
 
@@ -118,7 +117,6 @@ enrichment_covariate_model <- nma.model(data=dataprep,
                                   link="logit",
                                   effects="random",
                                   covariate="x",
-                                  prior.beta = "EXCHANGEABLE",
                                   enrichment = "covariate",
                                  )
 
@@ -209,7 +207,7 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 ## Results
 
-Let's looks at the relative treatment differences and ranking of treaments when the proportion of patients with a prior stroke is equal to 0.1. -->
+Let's looks at the relative treatment differences and ranking of treatments when the proportion of patients with a prior stroke is equal to 0.1. -->
 
 <!-- ### Sucra Plot -->
 <!-- ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95} -->

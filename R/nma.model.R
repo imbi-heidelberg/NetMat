@@ -133,7 +133,8 @@ nma.model <- function(data = NULL,
   if(type!="consistency" & type!="inconsistency") stop("Type must be either consistency or inconsistency.")
     
   
-  if(!is.null(covariate) & is.null(prior.beta))stop("prior.beta must be specified when covariate is specified")
+  if(!is.null(covariate)){
+    if(is.null(enrichment) & is.null(prior.beta))stop("prior.beta must be specified when covariate is specified")}
   if(is.null(covariate) & !is.null(prior.beta))stop("covariate must be specified when prior.beta is specified")
   if(!is.null(prior.beta)){
     if(!(prior.beta %in% c("UNRELATED","EQUAL","EXCHANGEABLE"))){
@@ -374,7 +375,9 @@ nma.model <- function(data = NULL,
   ###Priors###
   ############
   
-  max.delta <- paste0(nma.prior(data, data_contrast=NULL, outcome=outcome, differences = differences, scale=scale, N=N, sd=sd, time = time))
+  max.delta <- paste0(nma.prior(data, data_contrast=NULL, 
+                                outcome=outcome, differences = differences,
+                                scale=scale, N=N, sd=sd, time = time))
   
   # BASELINE EFFECTS PRIOR
   if (prior.mu == "DEFAULT"){
