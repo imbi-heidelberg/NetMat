@@ -168,7 +168,7 @@ nma.regplot(random_effects_results)
 
 The lines are not parallel because we specified EXCHANGEABLE priors on the regression coefficients.
 
-Let's looks at the relative treatment differences and ranking of treaments when the proportion of patients with a prior stroke is equal to 0.1.
+Let's looks at the relative treatment differences and ranking of treatments when the proportion of patients with a prior stroke is equal to 0.1.
 
 ### Sucra Plot
 ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95}

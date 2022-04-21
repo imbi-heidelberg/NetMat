@@ -68,7 +68,9 @@ nma.league <- function(nma,
   if (class(nma) != "BUGSnetRun")
     stop("\'nma\' must be a valid BUGSnetRun object created using the nma.run function.")
   
-  if(!is.null(nma$model$covariate) & is.null(cov.value)) stop("cov.value must be specified for meta-regression")
+    if(!is.null(nma$model$covariate) & is.null(cov.value)){
+      if(is.null(nma$model$enrichment)) stop("cov.value must be specified for meta-regression")}
+  
   
   if(nma$model$type=="inconsistency") {
     stop('This function has not been implemented yet for the inconsistency model.')
@@ -78,7 +80,7 @@ nma.league <- function(nma,
   trt.names <- nma$trt.key
   colnames(dmat) <- trt.names
   
-  if(!is.null(cov.value)){#meta-regression
+  if(!is.null(cov.value)& is.null(nma$model$enrichment)){#meta-regression
     
     betamat <- do.call(rbind, nma$samples) %>% data.frame() %>% select(starts_with("beta."))
     trt.names <- nma$trt.key

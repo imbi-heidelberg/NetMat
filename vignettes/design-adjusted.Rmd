@@ -125,14 +125,14 @@ enrichment_covariate_model <- nma.model(data=dataprep,
 
 Alternatively, one can also specify the enrichment as "prior" and choose the parameter prior.ww from the three options "dunif(0,0.3)", "dunif(0.3,0.7)" and "dunif(0.7,1)" depending on the "general trust" put into the studies where $x < 1$ (Efthimiou et al.2017). Other options for priors may be added later. We chose the first option here, "dunif(0,0.3)".
 ```{r}
-enrichment_prior_model <- nma.model(data=dataprep,
-                                  outcome="event",
-                                  N="n",
-                                  reference="Chemo",
-                                  family="binomial",
-                                  link="logit",
-                                  effects="random",
-                                  covariate="x",
+enrichment_prior_model <- nma.model(data = dataprep,
+                                  outcome = "event",
+                                  N = "n",
+                                  reference = "Chemo",
+                                  family = "binomial",
+                                  link = "logit",
+                                  effects = "random",
+                                  covariate = "x",
                                   prior.beta = "EXCHANGEABLE",
                                   enrichment = "prior",
                                   prior.ww = "dunif(0,0.3)"
@@ -147,9 +147,9 @@ The next step is to run the NMA model using `nma.run()`. Since we are working in
 ```{r, results = "hide"}
 
 enrichment_covariate_results <- nma.run(enrichment_covariate_model,
-                           n.adapt=1000,
-                           n.burnin=1000,
-                           n.iter=5000)
+                           n.adapt = 1000,
+                           n.burnin = 1000,
+                           n.iter = 5000)
 
 ```
 
@@ -209,30 +209,30 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 Let's looks at the relative treatment differences and ranking of treatments when the proportion of patients with a prior stroke is equal to 0.1. -->
 
-<!-- ### Sucra Plot -->
-<!-- ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95} -->
-<!-- sucra.out <- nma.rank(enrichment_prior_results,  -->
-<!--                       largerbetter=FALSE,  -->
-<!--                       sucra.palette= "Set1") -->
-<!-- sucra.out$sucraplot -->
-<!-- ``` -->
+### Sucra Plot
+```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95}
+sucra.out <- nma.rank(enrichment_prior_results,
+                      largerbetter = TRUE, 
+                      sucra.palette= "Set1")
+sucra.out$sucraplot
+```
 
-<!-- ### League Plot -->
-<!-- ```{r, echo=TRUE, fig.width=15, fig.height=10} -->
-<!-- league.out <- nma.league(enrichment_prior_results, -->
-<!--                             central.tdcy = "median", -->
-<!--                             order = as.vector(t(dataprep$treatments)), -->
-<!--                             log.scale = FALSE) -->
-<!-- league.out$heatplot -->
-<!-- ``` -->
+### League Plot
+```{r, echo=TRUE, fig.width=15, fig.height=10}
+league.out <- nma.league(enrichment_prior_results, 
+                            central.tdcy = "median", 
+                            order = as.vector(t(dataprep$treatments)), 
+                            log.scale = FALSE)
+league.out$heatplot
+```
 
-<!-- ### Forest Plot -->
-<!-- ```{r, echo=TRUE, fig.width=10, fig.height=4} -->
-<!-- nma.forest(enrichment_prior_results, -->
-<!--             comparator="02", -->
-<!--          central.tdcy = "median",  -->
-<!--           x.trans="log") -->
-<!-- ``` -->
+### Forest Plot
+```{r, echo=TRUE, fig.width=10, fig.height=4}
+nma.forest(enrichment_prior_results,
+          comparator="Chemo",
+          central.tdcy = "median",
+          x.trans="log")
+```
 
 
 

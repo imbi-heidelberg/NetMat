@@ -75,9 +75,11 @@ nma.rank <- function(nma,
   if (class(nma) != "BUGSnetRun")
     stop("\'nma\' must be a valid BUGSnetRun object created using the nma.run function.")
   
-  if(!is.null(nma$model$covariate) & is.null(cov.value)){
-    if(nma$model$prior.beta!="EQUAL") stop("cov.value must be specified for meta-regression")
-  }
+  
+    if(!is.null(nma$model$covariate) & is.null(cov.value)){
+      if(is.null(nma$model$enrichment)){
+        if(nma$model$prior.beta!="EQUAL") stop("cov.value must be specified for meta-regression")
+  }}
   if(is.null(nma$model$covariate) & !is.null(cov.value)) stop("cov.value cannot be specified outside of meta-regression")
   
   if(nma$model$type=="inconsistency") {

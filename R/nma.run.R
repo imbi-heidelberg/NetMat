@@ -88,12 +88,10 @@ nma.run <- function(model,
       make.monitor <- "d"
       if(model$effects=="random") make.monitor <- c(make.monitor, "sigma")
       if(!is.null(model$covariate)){
-        if(!is.null(model$enrichment)){
-          make.monitor <- c(make.monitor, "sigma")}
-        }else make.monitor <- c(make.monitor, "beta")
-      }else make.monitor <- c(monitor, "d")
-  }else make.monitor <- c(monitor, "d")
-  make.monitor <- unique(make.monitor)
+        if(is.null(model$enrichment)) make.monitor <- c(make.monitor, "beta")}
+      }else make.monitor <- unique(c(monitor, "d"))
+  }else make.monitor <- unique(c(monitor, "d"))
+ 
   
   
   if(DIC==TRUE){
