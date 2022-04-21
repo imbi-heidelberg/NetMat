@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 ``` {r}
 library(BUGSnet)
 
-
 data(nsclc)
 dataprep <- data.prep(arm.data = nsclc,
                       varname.t = "treatment",
@@ -31,24 +30,21 @@ dataprep <- data.prep(arm.data = nsclc,
 Note: This vignette is structured like the one for the standard meta-regression model but with the NSCLC-data set and additional weighting approaches as example.
 
 
-Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods based on the work of Efthimiou et. al. (2017) for the integration of randomized and non-randomized evidence in network meta-analysis.
+Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods based on the work of [@efthimiou17] for the integration of randomized and non-randomized evidence in network meta-analysis.
 In clinical research, a drug might be identified, during its development or even retrospectively, as being more promising in a
 specific subgroup of patients (i.e. in patients with a particular biomarker) than in the originally defined population. As a result,
-focus may shift onto this specific subpopulation in subsequent research. The enriching -through-weighting approach described in Proctor et al. allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account.
+focus may shift onto this specific subpopulation in subsequent research. The enriching -through-weighting approach described in [@proctor22] allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account.
 The general network meta-analysis model is now extended by including a down-weighting factor $w_j$ in the variance of the estimated treatment effect of study $j$:
 
 
-$$
-r_{jk} \sim \text{Bin}\left(p_{jk}, n_{jk}\right) \\
-
+$$r_{jk} \sim \text{Bin}\left(p_{jk}, n_{jk}\right) \\
 \text{logit}(p_{jk})=
 \begin{cases}
 \mu_{jb} \quad \quad \quad \quad \quad \text{ for } k=b\\
 \mu_{jb}+\delta_{jbk} \quad \quad \text{ for }  k \neq b 
 \end{cases} \\
 \delta_{jbk} \sim \mathcal{N} \left(d_{bk}, \frac{\sigma^2}{w_j}\right) \sim
- N \left(d_{Ck}-d_{Cb},\frac{\sigma^2}{w_j}\right).
-$$
+ N \left(d_{Ck}-d_{Cb},\frac{\sigma^2}{w_j}\right)$$
 
 To clarify the usage of this type of weighting, a sample dataset was added regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as covariate X. You can midfy this factor $w_j$ in two ways: it can be chosen to depend on
 
@@ -117,13 +113,12 @@ enrichment_covariate_model <- nma.model(data=dataprep,
                                   link="logit",
                                   effects="random",
                                   covariate="x",
-                                  enrichment = "covariate",
-                                 )
+                                  enrichment = "covariate")
 
 ```
 
 
-Alternatively, one can also specify the enrichment as "prior" and choose the parameter prior.ww from the three options "dunif(0,0.3)", "dunif(0.3,0.7)" and "dunif(0.7,1)" depending on the "general trust" put into the studies where $x < 1$ (Efthimiou et al.2017). Other options for priors may be added later. We chose the first option here, "dunif(0,0.3)".
+Alternatively, one can also specify the enrichment as "prior" and choose the parameter prior.ww from the three options "dunif(0,0.3)", "dunif(0.3,0.7)" and "dunif(0.7,1)" depending on the "general trust" put into the studies where $x < 1$ @efthimiou17. Other options for priors may be added later. We chose the first option here, "dunif(0,0.3)".
 ```{r}
 enrichment_prior_model <- nma.model(data = dataprep,
                                   outcome = "event",
@@ -207,7 +202,7 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 ## Results
 
-Let's looks at the relative treatment differences and ranking of treatments when the proportion of patients with a prior stroke is equal to 0.1. -->
+Let's looks at the relative treatment differences and ranking of treatments.
 
 ### Sucra Plot
 ```{r, echo=TRUE, fig.width=7, fig.height=4, dpi = 95}
