@@ -46,14 +46,14 @@ $$r_{jk} \sim \text{Bin}\left(p_{jk}, n_{jk}\right) \\
 \delta_{jbk} \sim \mathcal{N} \left(d_{bk}, \frac{\sigma^2}{w_j}\right) \sim
  N \left(d_{Ck}-d_{Cb},\frac{\sigma^2}{w_j}\right)$$
 
-To clarify the usage of this type of weighting, a sample dataset was added regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as covariate X. You can midfy this factor $w_j$ in two ways: it can be chosen to depend on
+To clarify the usage of this type of weighting, a sample dataset was added regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as covariate X. You can modify this factor $w_j$ in two ways: it can be chosen to depend on
 
 - the percentage of biomarker-positive patients per study, meaning $x_j$, is assigned to $w_j$. 
 By doing so, studies with a higher proportion of biomarker-positive patients are contributing more evidence than studies with only a few biomarker-positive patients and targeted studies ($x_j$ = 100\%) are included without downweighting ($w_j = 1$).  
 
 
 - the weight of studies with $x < 1$ is decreased by assigning $w_j$ a prior uniform distribution which depends on the assumed "general trust" in the evidence of the mixed population studies. Looking at three different distributions, we evaluate varying levels of trust in the mixed-populations' data:
-1. $w_j \sim \mathcal{U}(0 ,0.3)$; 
+1. $w_j \sim \mathcal{U}(0,0.3)$; 
 2. $w_j \sim \mathcal{U}(0.3,0.7)$; 
 3. $w_j \sim \mathcal{U}(0.7,1)$
 This can be useful in case no information of the treatment effect of biomarker-positive patients from other trials are available or the percentage is unknown.
