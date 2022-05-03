@@ -31,9 +31,7 @@ Note: This vignette is structured like the one for the standard meta-regression 
 
 
 %Analogous to the basic model construction laid out for the meta-regression you can now also employ enrichment-based methods based on the work of [@efthimiou17] for the integration of randomized and non-randomized evidence in network meta-analysis.
-In clinical research, a drug might be identified, during its development or even retrospectively, as being more promising in a
-specific subgroup of patients (i.e. in patients with a particular biomarker) than in the originally defined population. As a result,
-focus may shift onto this specific subpopulation in subsequent research. In order to use all evidence available (all study data available) also studies with the overall population are included in the network meta-analysis. In order to adjust for the possible heterogenous population an enriching-through-weightinh approach is used and described in more detail here.
+In clinical research, a drug might be identified, during its development or even retrospectively, as being more promising in a specific subgroup of patients (i.e. in patients with a particular biomarker) than in the originally defined population. As a result,focus may shift onto this specific subpopulation in subsequent research. In order to use all evidence available (all study data available) also studies with the overall population are included in the network meta-analysis. In order to adjust for the possible heterogeneous population an enriching-through-weighting approach is used and described in more detail here.
 This enriching -through-weighting approach described in [@proctor22] allows to synthesize multiple studies with these characteristics and take their respective proportion of the regarding subpopulations of interest into account. Therefore the general network meta-analysis model for binary data (see also Vignette binary data) is extended by including a down-weighting factor $w_j$ in the variance of the estimated treatment effect of study $j$:
 
 
@@ -56,13 +54,14 @@ By doing so, studies with a higher proportion of biomarker-positive patients are
 - the weight of studies with $x < 1$ is decreased by assigning $w_j$ a prior uniform distribution which depends on the assumed "general trust" in the evidence of the mixed population studies. Looking at three different distributions, we evaluate varying levels of trust in the mixed-populations' data:
 1. $w_j \sim \mathcal{U}(0,0.3)$; 
 
-To clarify the usage of this approach a sample dataset was added to the BUGSnet data regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as study specific covariate $x_j. For the weighting approach two settings are ppossible.
-You can modfy this factor $w_j$ in two ways: 
+To clarify the usage of this approach a sample dataset was added to the BUGSnet data regarding the treatment of non-small cell lung cancer (NSCLC). In the added dataset, the proportion of patients exhibiting a certain biomarker is denoted as study specific covariate $x_j. For the weighting approach two settings are possible.
+You can modify this factor $w_j$ in two ways: 
+
 1. Enrichment with covariate: $w_j$ depends on the percentage of biomarker-positive patients per study, meaning $x_j$, is assigned to $w_j$. 
-By doing so, studies with a higher proportion of biomarker-positive patients are contributing more evidence than studies with only a few biomarker-positive patients. Targeted studies ($x_j$ = 1) are included without downweighting ($w_j = 1$).  \\
+By doing so, studies with a higher proportion of biomarker-positive patients are contributing more evidence than studies with only a few biomarker-positive patients. Targeted studies ($x_j$ = 1) are included without down-weighting ($w_j = 1$).  \\
+
 2 Enrichment with prior: A uniform prior distribution is assigned to $w_j$ and therefore the weight of studies with $x < 1$ is decreased. This uniform prior distribution depends on the assumed "general trust" in the evidence of the mixed population studies. In the current implementation three different distributions are possible with which varying levels of trust in the mixed-populations' data are evaluated:
-1. $w_j \sim \mathcal{U}(0 ,0.3)$; 
->>>>>>> 3eb6f696d6c52b40c581c61fe25c45c3565cd051
+1. $w_j \sim \mathcal{U}(0,0.3)$; 
 2. $w_j \sim \mathcal{U}(0.3,0.7)$; 
 3. $w_j \sim \mathcal{U}(0.7,1)$
 This form of weighting can be especially useful in the case when no information of the treatment effect of biomarker-positive patients from other trials are available or the percentage is unknown.
