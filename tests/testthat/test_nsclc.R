@@ -41,7 +41,7 @@ tbl_enrichment_cov <- cbind(s_enrichment_cov$statistics[,1:2],
 
 
 
-########################benchmarking prior##########################################
+########################benchmarking prior Unif(0, 0.3)##########################################
 
 set.seed(1234)
 seeds <- sample.int(4, n = .Machine$integer.max)
@@ -67,8 +67,8 @@ enrichment_prior_model$inits <- mapply(c, enrichment_prior_model$inits, list(
 
 enrichment_prior_results <- nma.run(enrichment_prior_model,
                                     n.adapt=1000,
-                                    n.burnin=1000,
-                                    n.iter=5000)
+                                    n.burnin=10000,
+                                    n.iter=50000)
 
 
 s_enrichment_p <- summary(enrichment_prior_results$samples[,2:5])
@@ -82,10 +82,93 @@ rownames(benchmark) <- NULL
 test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
 
 
+
+########################benchmarking prior Unif(0.3, 0.7)##########################################
+
+set.seed(1234)
+seeds <- sample.int(4, n = .Machine$integer.max)
+
+enrichment_prior_model0307 <- nma.model(data = dataprep,
+                                    outcome = "event",
+                                    N = "n",
+                                    reference = "1",
+                                    family = "binomial",
+                                    link = "logit",
+                                    effects = "random",
+                                    covariate = "x",
+                                    prior.beta = "EXCHANGEABLE",
+                                    enrichment = "prior",
+                                    prior.ww = "dunif(0.3,0.7)")
+
+
+enrichment_prior_model0307$inits <- mapply(c, enrichment_prior_model0307$inits, list(
+  list(.RNG.name="base::Wichmann-Hill", .RNG.seed=seeds[1]),
+  list(.RNG.name="base::Marsaglia-Multicarry", .RNG.seed=seeds[2]),
+  list(.RNG.name="base::Super-Duper", .RNG.seed=seeds[3]),
+  list(.RNG.name="base::Mersenne-Twister", .RNG.seed=seeds[4])), SIMPLIFY=FALSE)
+
+enrichment_prior_results_0307 <- nma.run(enrichment_prior_model0307,
+                                    n.adapt=1000,
+                                    n.burnin=10000,
+                                    n.iter=50000)
+
+
+s_enrichment_p0307 <- summary(enrichment_prior_results0307$samples[,2:5])
+tbl_enrichment_p <- cbind(s_enrichment_p$statistics[,1:2], 
+                          s_enrichment_p$quantiles[,c(3,1,5)])
+
+
+benchmark <- 
+  rownames(benchmark) <- NULL
+
+test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
+
+
 #results.league <- nma.league(enrichment_covariate_results)
 
 #results.table <- results.league$table
 #results <- summary(enrichment_covariate_results$samples)
+
+
+########################benchmarking prior Unif(0.7, 1)##########################################
+
+set.seed(1234)
+seeds <- sample.int(4, n = .Machine$integer.max)
+
+enrichment_prior_model0307 <- nma.model(data = dataprep,
+                                        outcome = "event",
+                                        N = "n",
+                                        reference = "1",
+                                        family = "binomial",
+                                        link = "logit",
+                                        effects = "random",
+                                        covariate = "x",
+                                        prior.beta = "EXCHANGEABLE",
+                                        enrichment = "prior",
+                                        prior.ww = "dunif(0.7,1)")
+
+
+enrichment_prior_model071$inits <- mapply(c, enrichment_prior_model071$inits, list(
+  list(.RNG.name="base::Wichmann-Hill", .RNG.seed=seeds[1]),
+  list(.RNG.name="base::Marsaglia-Multicarry", .RNG.seed=seeds[2]),
+  list(.RNG.name="base::Super-Duper", .RNG.seed=seeds[3]),
+  list(.RNG.name="base::Mersenne-Twister", .RNG.seed=seeds[4])), SIMPLIFY=FALSE)
+
+enrichment_prior_results_071 <- nma.run(enrichment_prior_model071,
+                                         n.adapt=1000,
+                                         n.burnin=10000,
+                                         n.iter=50000)
+
+
+s_enrichment_p071 <- summary(enrichment_prior_results071$samples[,2:5])
+tbl_enrichment_p <- cbind(s_enrichment_p071$statistics[,1:2], 
+                          s_enrichment_p071$quantiles[,c(3,1,5)])
+
+
+benchmark <- 
+  rownames(benchmark) <- NULL
+
+test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
 
 
 
