@@ -166,7 +166,9 @@ nma.model <- function(data = NULL,
   
   
   #pull relevant fields from the data and apply naming convention
-  avarlist <- c(trt = data$varname.t, trial = data$varname.s, r1 = outcome, N = N, sd = sd, timevar = time, covariate = covariate) #se.diffs = se.diffs, var.ref = var.ref
+  avarlist <- c(trt = data$varname.t, trial = data$varname.s,
+                r1 = outcome, N = N, sd = sd, 
+                timevar = time, covariate = covariate) #se.diffs = se.diffs, var.ref = var.ref
   adata <- data$arm.data[, avarlist]
   names(adata) <- names(avarlist)
   trts <- adata$trt

@@ -32,17 +32,20 @@ library(tidyverse)
 nsclc <- data_bsp %>%
   select(study, treament, control,response_treat, response_cont, n_treat, n_cont, cov) %>%
   rename(
-    treatment_1 = "treament",
-    treatment_2 = "control",
-    event_1 = "response_treat",
-    event_2 = "response_cont",
-    n_1 = "n_treat",
-    n_2 = "n_cont",
+    treatname_2 = "treament",
+    treatname_1 = "control",
+    event_2 = "response_treat",
+    event_1 = "response_cont",
+    n_2 = "n_treat",
+    n_1 = "n_cont",
     x = "cov"
   ) %>%
   pivot_longer(c(2:7),
                names_to = c(".value", "set"),
-               names_pattern = "(.+)_(.)")
+               names_pattern = "(.+)_(.)") %>%
+  mutate(treatment = ifelse(treatname == "Chemo", 1,
+                             ifelse(treatname =="Gefitinib",2,3)))
+  
 
 use_data(nsclc, overwrite=TRUE)
 

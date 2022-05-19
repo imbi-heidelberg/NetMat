@@ -6,47 +6,50 @@
 
 library(BUGSnet)
 
-set.seed(1234)
-
 dataprep <- data.prep(arm.data = nsclc,
                       varname.t = "treatment",
                       varname.s = "study")
 
-
-
-enrichment_covariate_model <- nma.model(data=dataprep,
-                                        outcome="event",
-                                        N="n",
-                                        reference="Chemo",
-                                        family="binomial",
-                                        link="logit",
-                                        effects="random",
-                                        covariate="x",
+set.seed(1234)
+seeds <- sample.int(4, n = .Machine$integer.max)
+enrichment_covariate_model <- nma.model(data = dataprep,
+                                        outcome = "event",
+                                        N = "n",
+                                        reference = 1,
+                                        family = "binomial",
+                                        link = "logit",
+                                        effects = "random",
+                                        covariate = "x",
                                         enrichment = "covariate")
 
 
 
+model$inits <- mapply(c, model$inits, list(
+  list(.RNG.name="base::Wichmann-Hill", .RNG.seed=seeds[1]),
+  list(.RNG.name="base::Marsaglia-Multicarry", .RNG.seed=seeds[2]),
+  list(.RNG.name="base::Super-Duper", .RNG.seed=seeds[3]),
+  list(.RNG.name="base::Mersenne-Twister", .RNG.seed=seeds[4])), SIMPLIFY=FALSE)
+
 enrichment_covariate_results <- nma.run(enrichment_covariate_model,
                                         n.adapt = 1000,
-                                        n.burnin = 1000,
-                                        n.iter = 5000)
+                                        n.burnin = 10000,
+                                        n.iter = 100000)
 
 s_enrichment_cov <- summary(enrichment_covariate_results$samples[,2:5])
-tbl_enrichment_cov <- cbind(s_enrichment_cov$statistics[,1:2], s_fe$quantiles[,c(3,1,5)])
-
-
-
+tbl_enrichment_cov <- cbind(s_enrichment_cov$statistics[,1:2], 
+                            s_enrichment_cov$quantiles[,c(3,1,5)])
 
 
 
 ########################benchmarking prior##########################################
 
-
+set.seed(1234)
+seeds <- sample.int(4, n = .Machine$integer.max)
 
 enrichment_prior_model <- nma.model(data = dataprep,
                                     outcome = "event",
                                     N = "n",
-                                    reference = "Chemo",
+                                    reference = "1",
                                     family = "binomial",
                                     link = "logit",
                                     effects = "random",
@@ -56,7 +59,11 @@ enrichment_prior_model <- nma.model(data = dataprep,
                                     prior.ww = "dunif(0,0.3)")
 
 
-
+enrichment_prior_model$inits <- mapply(c, enrichment_prior_model$inits, list(
+  list(.RNG.name="base::Wichmann-Hill", .RNG.seed=seeds[1]),
+  list(.RNG.name="base::Marsaglia-Multicarry", .RNG.seed=seeds[2]),
+  list(.RNG.name="base::Super-Duper", .RNG.seed=seeds[3]),
+  list(.RNG.name="base::Mersenne-Twister", .RNG.seed=seeds[4])), SIMPLIFY=FALSE)
 
 enrichment_prior_results <- nma.run(enrichment_prior_model,
                                     n.adapt=1000,
@@ -65,7 +72,8 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 
 s_enrichment_p <- summary(enrichment_prior_results$samples[,2:5])
-tbl_enrichment_p <- cbind(s_enrichment_p$statistics[,1:2], s_fe$quantiles[,c(3,1,5)])
+tbl_enrichment_p <- cbind(s_enrichment_p$statistics[,1:2], 
+                          s_enrichment_p$quantiles[,c(3,1,5)])
 
 
 benchmark <- 
@@ -87,10 +95,12 @@ model_fe <- nma.model(dat, outcome = "y", N = "n", sd = "sd", reference = "1", f
 results_fe <- nma.run(model_fe, n.adapt = 5000, n.burnin = 50000, n.iter = 100000)
 
 s_fe <- summary(results_fe$samples[,2:5])
-tbl_fe <- cbind(s_fe$statistics[,1:2], s_fe$quantiles[,c(3,1,5)])
+tbl_fe <- cbind(s_fe$statistics[,1:2], 
+                s_fe$quantiles[,c(3,1,5)])
 
 #TSD2 Example 5 Random Effects Model
-model_re <- nma.model(dat, outcome = "y", N = "n", sd = "sd", reference = "1", family = "normal",
+model_re <- nma.model(dat, outcome = "y", N = "n", sd = "sd", 
+                      reference = "1", family = "normal",
                       link = "identity", effects = "random")
 results_re <- nma.run(model_re, n.adapt = 5000, n.burnin = 50000, n.iter = 100000)
 s_re <- summary(results_re$samples[,2:5])
