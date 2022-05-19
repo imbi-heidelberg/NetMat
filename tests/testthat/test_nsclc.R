@@ -165,7 +165,7 @@ tbl_enrichment_p <- cbind(s_enrichment_p071$statistics[,1:2],
                           s_enrichment_p071$quantiles[,c(3,1,5)])
 
 
-benchmark <- 
+benchmark <- BUGSnet:::
   rownames(benchmark) <- NULL
 
 test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
