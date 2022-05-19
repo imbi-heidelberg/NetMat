@@ -19,7 +19,8 @@ usethis::use_data(tsd2ex5, internal = TRUE)
 
 nsclcdata <- read.csv(paste0(getwd(), "/data-raw/Daten_Beispiel.csv"), 
                         stringsAsFactors = FALSE)
-nsclcresults <- load(paste0(getwd(),"/data-raw/nsclc_results.Rda"))
+nsclcresults <- read.csv(paste0(getwd(),"/data-raw/nsclc_results.csv"), 
+                         stringsAsFactors = FALSE)
 #tsd2ex5bugsnet <- read.csv(paste0(getwd(), "/data-raw/TSD2_ex5_parkinsons_bugsnet.csv"), 
 #                           stringsAsFactors = FALSE, check.names = F)
 nsclc_test <- list(data = nsclcdata, results = nsclcresults)

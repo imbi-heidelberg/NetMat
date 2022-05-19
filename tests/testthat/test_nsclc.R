@@ -15,7 +15,7 @@ seeds <- sample.int(4, n = .Machine$integer.max)
 enrichment_covariate_model <- nma.model(data = dataprep,
                                         outcome = "event",
                                         N = "n",
-                                        reference = 1,
+                                        reference = "1",
                                         family = "binomial",
                                         link = "logit",
                                         effects = "random",
@@ -36,8 +36,8 @@ enrichment_covariate_results <- nma.run(enrichment_covariate_model,
                                         n.iter = 100000)
 
 s_enrichment_cov <- summary(enrichment_covariate_results$samples[,2:5])
-tbl_enrichment_cov <- cbind(s_enrichment_cov$statistics[,1:2], 
-                            s_enrichment_cov$quantiles[,c(3,1,5)])
+tbl_enrichment_cov <- cbind(s_enrichment_cov$statistics[1:2,1:2], 
+                            s_enrichment_cov$quantiles[1:2,c(3,1,5)])
 
 
 
@@ -72,14 +72,8 @@ enrichment_prior_results <- nma.run(enrichment_prior_model,
 
 
 s_enrichment_p <- summary(enrichment_prior_results$samples[,2:5])
-tbl_enrichment_p <- cbind(s_enrichment_p$statistics[,1:2], 
-                          s_enrichment_p$quantiles[,c(3,1,5)])
-
-
-benchmark <- 
-rownames(benchmark) <- NULL
-
-test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
+tbl_enrichment_p <- cbind(s_enrichment_p$statistics[1:2,1:2], 
+                          s_enrichment_p$quantiles[1:2,c(3,1,5)])
 
 
 
@@ -98,7 +92,7 @@ enrichment_prior_model0307 <- nma.model(data = dataprep,
                                     covariate = "x",
                                     prior.beta = "EXCHANGEABLE",
                                     enrichment = "prior",
-                                    prior.ww = "dunif(0.3,0.7)")
+                                    prior.ww = "dunif(0.3, 0.7)")
 
 
 enrichment_prior_model0307$inits <- mapply(c, enrichment_prior_model0307$inits, list(
@@ -113,21 +107,9 @@ enrichment_prior_results_0307 <- nma.run(enrichment_prior_model0307,
                                     n.iter=50000)
 
 
-s_enrichment_p0307 <- summary(enrichment_prior_results0307$samples[,2:5])
-tbl_enrichment_p <- cbind(s_enrichment_p$statistics[,1:2], 
-                          s_enrichment_p$quantiles[,c(3,1,5)])
-
-
-benchmark <- 
-  rownames(benchmark) <- NULL
-
-test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
-
-
-#results.league <- nma.league(enrichment_covariate_results)
-
-#results.table <- results.league$table
-#results <- summary(enrichment_covariate_results$samples)
+s_enrichment_p0307 <- summary(enrichment_prior_results_0307$samples[,2:5])
+tbl_enrichment_p0307 <- cbind(s_enrichment_p0307$statistics[1:2,1:2], 
+                          s_enrichment_p0307$quantiles[1:2,c(3,1,5)])
 
 
 ########################benchmarking prior Unif(0.7, 1)##########################################
@@ -135,7 +117,7 @@ test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enric
 set.seed(1234)
 seeds <- sample.int(4, n = .Machine$integer.max)
 
-enrichment_prior_model0307 <- nma.model(data = dataprep,
+enrichment_prior_model071 <- nma.model(data = dataprep,
                                         outcome = "event",
                                         N = "n",
                                         reference = "1",
@@ -160,15 +142,23 @@ enrichment_prior_results_071 <- nma.run(enrichment_prior_model071,
                                          n.iter=50000)
 
 
-s_enrichment_p071 <- summary(enrichment_prior_results071$samples[,2:5])
-tbl_enrichment_p <- cbind(s_enrichment_p071$statistics[,1:2], 
-                          s_enrichment_p071$quantiles[,c(3,1,5)])
+s_enrichment_p071 <- summary(enrichment_prior_results_071$samples[,2:5])
+tbl_enrichment_p071 <- cbind(s_enrichment_p071$statistics[1:2,1:2], 
+                          s_enrichment_p071$quantiles[1:2,c(3,1,5)])
+
+#round and append tables
+results <- as.data.frame(round(rbind(tbl_enrichment_cov, 
+                                     tbl_enrichment_p,
+                                     tbl_enrichment_p0307,
+                                     tbl_enrichment_p071), 2))
+rownames(results) <- NULL
 
 
-benchmark <- BUGSnet:::
+benchmark <- BUGSnet:::nsclc_test$results[,c(1,2,5,3,7)]
+benchmark1 <- round(benchmark,2)
   rownames(benchmark) <- NULL
 
-test_that("nma.run results match benchmark", { expect_equal(benchmark, tbl_enrichment_p) })
+test_that("nma.run results match benchmark", { expect_equal(benchmark1, results) })
 
 
 
