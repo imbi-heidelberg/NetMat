@@ -154,7 +154,7 @@ results <- as.data.frame(round(rbind(tbl_enrichment_cov,
 rownames(results) <- NULL
 
 
-benchmark <- BUGSnet:::nsclc_test$results[,c(1,2,5,3,7)]
+benchmark <- BUGSnet:::nsclc_test_new$results[,c(1,2,5,3,7)]
 benchmark1 <- round(benchmark,2)
   rownames(benchmark) <- NULL
 
