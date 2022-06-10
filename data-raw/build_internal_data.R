@@ -35,6 +35,8 @@ usethis::use_data(tsd2ex5, internal = TRUE)
 
 #nsclcdata <- read.csv(paste0(getwd(), "/data-raw/Daten_Beispiel.csv"), 
 #                        stringsAsFactors = FALSE)
+
+
 data_bsp <- read_excel(paste0(getwd(),"/data-raw/Daten_Beispiel.xlsx"))
 nsclcdata <- data_bsp %>%
   select(study, treament, control,response_treat, response_cont, n_treat, n_cont, cov) %>%
@@ -47,12 +49,9 @@ nsclcdata <- data_bsp %>%
          x = "cov") %>%
   pivot_longer(c(2:7),
                names_to = c(".value", "set"),
-               names_pattern = "(.+)_(.)")
-
-nsclcdata$treatment <- recode(nsclcdata$treatment, 
-                                         "Chemo"=1,
-                                          "Erlotinib"= 3, 
-                                          "Gefitinib" = 2)
+               names_pattern = "(.+)_(.)")%>%
+  mutate(treatment = ifelse(treatment == "Chemo", 1,
+                            ifelse(treatment =="Gefitinib",2,3)))
 
 nsclcresults <- read.csv(paste0(getwd(),"/data-raw/nsclc_results.csv"), 
                          stringsAsFactors = FALSE)
