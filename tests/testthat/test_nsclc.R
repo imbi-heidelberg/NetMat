@@ -6,7 +6,7 @@
 
 library(BUGSnet)
 
-dataprep <- data.prep(arm.data = nsclc,
+dataprep <- data.prep(arm.data = BUGSnet:::nsclc_test$data,
                       varname.t = "treatment",
                       varname.s = "study")
 
@@ -20,6 +20,7 @@ enrichment_covariate_model <- nma.model(data = dataprep,
                                         link = "logit",
                                         effects = "random",
                                         covariate = "x",
+                                        prior.beta = "EXCHANGEABLE",
                                         enrichment = "covariate")
 
 
