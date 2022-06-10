@@ -134,7 +134,8 @@ nma.model <- function(data = NULL,
     
   
   if(!is.null(covariate)){
-    if(is.null(enrichment) & is.null(prior.beta))stop("prior.beta must be specified when covariate is specified")}
+    if(is.null(enrichment) & is.null(prior.beta))stop("prior.beta must be specified when covariate is specified")
+    }
   if(is.null(covariate) & !is.null(prior.beta))stop("covariate must be specified when prior.beta is specified")
   if(!is.null(prior.beta)){
     if(!(prior.beta %in% c("UNRELATED","EQUAL","EXCHANGEABLE"))){

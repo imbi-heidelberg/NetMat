@@ -36,7 +36,7 @@ data.prep <- function(arm.data,
   varname.s.quo <- rlang::quo(!! as.name(varname.s))
   
   
-  arm.data %<>% mutate(!! varname.t.quo := as.character(!! varname.t.quo),
+  arm.data <- arm.data %>% mutate(!! varname.t.quo := as.character(!! varname.t.quo),
                        !! varname.s.quo := as.character(!! varname.s.quo))
   
   bdata <- structure(list(arm.data=arm.data,

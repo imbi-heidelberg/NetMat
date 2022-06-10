@@ -6,7 +6,7 @@
 
 library(BUGSnet)
 
-dataprep <- data.prep(arm.data = nsclc_data,
+dataprep <- data.prep(arm.data = nsclc,
                       varname.t = "treatment",
                       varname.s = "study")
 

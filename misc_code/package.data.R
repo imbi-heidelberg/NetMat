@@ -26,9 +26,28 @@ afib <- atrialFibrillation$data.ab %>%
 use_data(afib, overwrite=TRUE) #metareg
 
 
-library(readxl)
+data_bsp <- read_excel(paste0(getwd(),"/data-raw/Daten_Beispiel.xlsx"))
+nsclcdata <- data_bsp %>%
+  select(study, treament, control,response_treat, response_cont, n_treat, n_cont, cov) %>%
+  rename(treatment_1 = "treament",
+         treatment_2 = "control",
+         event_1 = "response_treat",
+         event_2 = "response_cont",
+         n_1 = "n_treat",       
+         n_2 = "n_cont",
+         x = "cov") %>%
+  pivot_longer(c(2:7),
+               names_to = c(".value", "set"),
+               names_pattern = "(.+)_(.)")
+
+nsclcdata$treatment <- as.numeric(recode(nsclcdata$treatment, 
+                                         "Chemo"=1,
+                                         "Erlotinib"= 3, 
+                                         "Gefitinib" = 2))
+
+
+
 data_bsp <- Daten_Beispiel <- read_excel(paste0(getwd(),"/data-raw/Daten_Beispiel.xlsx"))
-library(tidyverse)
 nsclc <- data_bsp %>%
   select(study, treament, control,response_treat, response_cont, n_treat, n_cont, cov) %>%
   rename(
@@ -45,8 +64,6 @@ nsclc <- data_bsp %>%
                names_pattern = "(.+)_(.)") %>%
   mutate(treatment = ifelse(treatname == "Chemo", 1,
                              ifelse(treatname =="Gefitinib",2,3)))
-  
-
 use_data(nsclc, overwrite=TRUE)
 
 
