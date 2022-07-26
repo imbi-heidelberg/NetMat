@@ -45,27 +45,22 @@ Download and install the most recent version of RStudio Desktop (free
 version) from
 [RStudio](https://www.rstudio.com/products/rstudio/download).
 
-### 4. Install BUGSnet
+### 4. Install NetMat
 
-In the RStudio console, type
+Download the package from this website.
 
-``` r
-install.packages("remotes")
-remotes::install_github("audrey-b/BUGSnet")
-```
+## Start using NetMat
 
-## Start using BUGSnet
+To start using NetMat, follow the vignettes available
 
-To start using BUGSnet, follow the vignettes available
-[here](https://bugsnetsoftware.github.io/).
 
 ## License
 
-BUGSnet is available under the Creative Commons
+NetMat and BUGSnet are available under the Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0 International License (CC
 BY-NC-SA 4.0). Kindly review the LICENSE file. You are responsible for
-conforming to the terms of this license. BUGSnet is provided as-is and
-comes with absolutely no warranties. Commercial use is prohibited;
+conforming to the terms of this license. and NetMat BUGSnet are provided as-is and
+come with absolutely no warranties. Commercial use is prohibited;
 please contact the authors for more information.
 
 ## How to cite BUGSnet?
