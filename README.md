@@ -9,7 +9,7 @@
 
 # NetMat
 
-The NetMat package is an extension of the BUGSnet package (Béliveau et al., 2019). As stated in
+The NetMat package is an extension of the BUGSnet package (Béliveau et al.(2019)). As stated in
 the BUGSnet packages: “BUGSnet (Bayesian inference Using Gibbs Sampling
 to conduct network meta-analysis) is a feature-rich R package to conduct
 Bayesian network meta-analyses in compliance with best practice and
