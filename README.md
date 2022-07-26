@@ -7,7 +7,7 @@
 
 <!-- badges: end -->
 
-# BUGSnet
+# NetMat
 
 The NetMat package is an extension of the BUGsnet package. As stated in
 the BUGSnet packages: “BUGSnet (Bayesian inference Using Gibbs Sampling
