@@ -22,7 +22,7 @@ posterior mean deviance comparison plots.”
 
 Additionally enrichment-through-weighting methods are included in the package to
 conduct Bayesian network meta-analyses for targeted and non-targeted
-studies along the lines of the analyses conducted by Proctor et. al. ().
+studies along the lines of the analyses conducted by Proctor et. al. (2022).
 
 ## Installation instructions
 
@@ -60,7 +60,7 @@ To start using NetMat, follow the vignettes available
 NetMat and BUGSnet are available under the Creative Commons
 Attribution-NonCommercial-ShareAlike 4.0 International License (CC
 BY-NC-SA 4.0). Kindly review the LICENSE file. You are responsible for
-conforming to the terms of this license. and NetMat BUGSnet are provided as-is and
+conforming to the terms of this license. NetMat and BUGSnet are provided as-is and
 come with absolutely no warranties. Commercial use is prohibited;
 please contact the authors for more information.
 
