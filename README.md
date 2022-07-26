@@ -64,13 +64,7 @@ conforming to the terms of this license. NetMat and BUGSnet are provided as-is a
 come with absolutely no warranties. Commercial use is prohibited;
 please contact the authors for more information.
 
-## How to cite BUGSnet?
-
-Béliveau A., Boyne D., Slater J., Brenner D. and Arora P. (2019).
-BUGSnet: an R package to facilitate the conduct and reporting of
-Bayesian network Meta-analyses. *BMC Medical Research Methodology*,
-19(196).
 
 ## Contribution
 
-Please report any [issues](https://github.com/audrey-b/BUGSnet/issues).
+Please report any issues to proctor@imbi.uni-heidelberg.de .
